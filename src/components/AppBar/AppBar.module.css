@@ -1,0 +1,15 @@
+.header {
+    padding: 24px 0;
+    border-bottom: 1px solid #2a363b;
+}
+
+.navList {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    &> :first-child {
+        margin-right: auto;
+    }
+}
