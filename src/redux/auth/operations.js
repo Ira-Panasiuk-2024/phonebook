@@ -73,7 +73,7 @@ export const registerThunk = createAsyncThunk(
   // Перейменовано параметр на userData, щоб уникнути конфлікту імен
   async (userData, thunkApi) => {
     try {
-      const { data } = await baseAxios.post('users/signup', userData); // Використовуємо baseAxios
+      const { data } = await baseAxios.post('auth/register', userData); // Використовуємо baseAxios
       setAuthHeader(data.token); // Встановлюємо заголовок після успіху
       return data;
     } catch (error) {
@@ -95,7 +95,7 @@ export const loginThunk = createAsyncThunk(
   // Перейменовано параметр на loginData
   async (loginData, thunkApi) => {
     try {
-      const { data } = await baseAxios.post('users/login', loginData); // Використовуємо baseAxios
+      const { data } = await baseAxios.post('auth/login', loginData); // Використовуємо baseAxios
       setAuthHeader(data.token); // Встановлюємо заголовок після успіху
       return data;
     } catch (error) {
@@ -114,7 +114,7 @@ export const logoutThunk = createAsyncThunk(
       // на фронтенді ДО запиту, або одразу після, щоб уникнути ситуацій
       // коли запит на вихід завис, а токен все ще висить.
       // Зазвичай очищення відбувається в редюсері logoutThunk.fulfilled.
-       await baseAxios.post('/users/logout'); // Використовуємо baseAxios
+       await baseAxios.post('/auth/logout'); // Використовуємо baseAxios
        // clearAuthHeader(); // Це можна викликати тут або в редюсері fulfilled
 
     } catch (error) {
@@ -150,7 +150,7 @@ export const refreshUserThunk = createAsyncThunk(
     setAuthHeader(savedToken);
 
     try {
-      const { data } = await baseAxios.get('users/current'); // Використовуємо baseAxios
+      const { data } = await baseAxios.get('auth/refresh'); // Використовуємо baseAxios
       return data; // Повертаємо дані користувача
     } catch (error) {
         // Обробка помилок оновлення (наприклад, недійсний токен)
