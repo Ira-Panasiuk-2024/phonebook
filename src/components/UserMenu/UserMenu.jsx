@@ -1,12 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutThunk } from '../../redux/auth/operations';
-import { selectUser  } from '../../redux/auth/selectors';
+import { selectUser } from '../../redux/auth/selectors';
 import { NavLink } from 'react-router-dom';
 import css from './UserMenu.module.css';
 
 const UserMenu = () => {
     const dispatch = useDispatch();
-    const { name } = useSelector(selectUser );
+    const user = useSelector(selectUser);
+    
+    // Безпечна деструктуризація імені
+    const name = user?.name || 'Guest';
 
     const handleLogout = (event) => {
         event.preventDefault();
