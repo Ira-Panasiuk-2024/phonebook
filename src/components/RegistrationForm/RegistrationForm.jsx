@@ -29,7 +29,6 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (values, options) => {
-    
     dispatch(registerThunk(values))
       .unwrap()
       .then(() => navigate('/'));
@@ -38,11 +37,14 @@ const RegistrationForm = () => {
 
   return (
     <>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
         <Form className={css.form}>
-
           <h3 className={css.title}>Registration</h3>
-          
+
           <div>
             <label className={css.label} htmlFor="name">
               Name
@@ -82,22 +84,23 @@ const RegistrationForm = () => {
               autoComplete="new-password"
               id="password"
             />
-            <ErrorMessage name="password" className={css.error} component="span" />
+            <ErrorMessage
+              name="password"
+              className={css.error}
+              component="span"
+            />
           </div>
 
-          <button type='submit' className={css.btn}>
+          <button type="submit" className={css.btn}>
             Registration
           </button>
 
-          <p className={css.text}> 
+          <p className={css.text}>
             You already have account?
-
-            <Link to='/login' className={css.link}>
+            <Link to="/login" className={css.link}>
               Login !{' '}
             </Link>
-
           </p>
-
         </Form>
       </Formik>
     </>

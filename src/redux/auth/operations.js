@@ -6,9 +6,9 @@ export const registerThunk = createAsyncThunk(
   'auth/register',
   async (credentials, thunkApi) => {
     try {
-      const { data } = await baseAxios.post('users/register', credentials);
-      setAuthHeader(data.token);
-      return data;
+      const { data } = await baseAxios.post('auth/register', credentials);
+      setAuthHeader(data.data.accessToken);
+      return data.data;
     } catch (error) {
       if (error.response.data.code === 11000) {
         toast.error('User already exist!');
@@ -24,8 +24,8 @@ export const loginThunk = createAsyncThunk(
   async (credentials, thunkApi) => {
     try {
       const { data } = await baseAxios.post('auth/login', credentials);
-      setAuthHeader(data.token);
-      return data;
+      setAuthHeader(data.data.accessToken);
+      return data.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
     }
@@ -39,6 +39,7 @@ export const logoutThunk = createAsyncThunk(
       await baseAxios.post('auth/logout');
       clearAuthHeader();
     } catch (error) {
+      toast.error(error.message || 'Logout failed'); 
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -54,9 +55,10 @@ export const refreshUserThunk = createAsyncThunk(
     setAuthHeader(savedToken);
 
     try {
-      const { data } = await baseAxios.get('users/current');
-      return data;
+      const { data } = await baseAxios.get('auth/refresh');
+      return data.data;
     } catch (error) {
+      toast.error(error.message || 'Session refresh failed');
       return thunkApi.rejectWithValue(error.message);
     }
   }

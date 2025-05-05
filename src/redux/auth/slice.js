@@ -36,11 +36,7 @@ const slice = createSlice({
   name: 'auth',
   initialState,
   extraReducers: builder => {
-    builder // Використовуємо addMatcher для централізованої обробки pending, fulfilled, rejected // Це застосується до всіх thunk-ів, доданих через addCase
-      .addMatcher(isPending, handlePending)
-      .addMatcher(isFulfilled, handleFulfilled)
-      .addMatcher(isRejected, handleRejected) // Обробка конкретних fulfilled станів
-
+    builder // ВАЖЛИВО: Спочатку додаємо всі обробники `addCase` // Це необхідно, оскільки `addMatcher` має бути викликаний після всіх `addCase` // Обробка успішних станів (fulfilled)
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isLoggedIn = true;
@@ -65,6 +61,10 @@ const slice = createSlice({
         state.isRefreshing = false;
       })
 
+      .addCase(refreshUserThunk.pending, state => {
+        state.isRefreshing = true;
+      })
+
       .addCase(registerThunk.rejected, (state, action) => {
         state.user = { name: '', email: '' };
         state.token = null;
@@ -78,20 +78,18 @@ const slice = createSlice({
         toast.error(action.payload?.message || ERROR_TEXT);
       })
       .addCase(logoutThunk.rejected, (state, action) => {
-        state.user = { name: '', email: '' };
-        state.token = null;
-        state.isLoggedIn = false;
         toast.error(action.payload?.message || ERROR_TEXT);
-      })
-      .addCase(refreshUserThunk.pending, state => {
-        state.isRefreshing = true;
       })
       .addCase(refreshUserThunk.rejected, state => {
         state.isRefreshing = false;
         state.user = { name: '', email: '' };
         state.token = null;
         state.isLoggedIn = false;
-      });
+      })
+
+      .addMatcher(isPending, handlePending)
+      .addMatcher(isFulfilled, handleFulfilled)
+      .addMatcher(isRejected, handleRejected);
   },
 });
 

@@ -5,25 +5,30 @@ import { NavLink } from 'react-router-dom';
 import css from './UserMenu.module.css';
 
 const UserMenu = () => {
-    const dispatch = useDispatch();
-    const user = useSelector(selectUser);
-    
-    // Безпечна деструктуризація імені
-    const name = user?.name || 'Guest';
+  const dispatch = useDispatch();
 
-    const handleLogout = (event) => {
-        event.preventDefault();
-        dispatch(logoutThunk());
-    };
+  const user = useSelector(selectUser);
 
-    return (
-        <div className={css.userContainer}>
-            <p className={css.userName}>Welcome, {name}</p>
-            <NavLink to="/login" onClick={handleLogout} className={css.nav} type="submit">
-                Logout
-            </NavLink>
-        </div>
-    );
+  const name = user?.name || 'Guest';
+
+  const handleLogout = event => {
+    event.preventDefault();
+    dispatch(logoutThunk());
+  };
+
+  return (
+    <div className={css.userContainer}>
+      <p className={css.userName}>Welcome, {name}</p>
+      <NavLink
+        to="/login"
+        onClick={handleLogout}
+        className={css.nav}
+        type="submit"
+      >
+        Logout
+      </NavLink>
+    </div>
+  );
 };
 
 export default UserMenu;

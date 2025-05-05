@@ -1,4 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  isPending,
+  isFulfilled,
+  isRejected,
+} from '@reduxjs/toolkit';
+
 import {
   fetchContacts,
   addContactOperation,
@@ -7,80 +13,80 @@ import {
   logoutOperation,
 } from './operations';
 
+import {
+  handlePending,
+  handleFulfilled,
+  handleRejected,
+} from '../../service/axios';
+
+const initialState = {
+  items: [],
+  page: 1,
+  totalPages: 1,
+  loading: false,
+  error: null,
+};
+
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {
-    items: [],
-    loading: false,
-    error: null,
+  initialState,
+  reducers: {
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
   },
-  reducers: {},
   extraReducers: builder => {
-    builder
-      .addCase(fetchContacts.pending, state => {
-        state.loading = true;
-      })
+    builder // ВАЖЛИВО: Спочатку додаємо всі обробники `addCase` зі специфічною логікою // Потім додаємо загальні обробники `addMatcher` // Обробка успішного отримання контактів (fulfilled)
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loading = false;
+        if (action.payload && Array.isArray(action.payload.data)) {
+          state.items = action.payload.data;
+          state.page = action.payload.page || 1;
+          state.totalPages = action.payload.totalPages || 1;
+        } else {
+          state.items = [];
+          state.page = 1;
+          state.totalPages = 1;
+          console.error(
+            'Fetch contacts returned unexpected data structure:',
+            action.payload
+          );
+        }
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
-      })
-      .addCase(addContactOperation.pending, state => {
-        state.loading = true;
-      })
+
       .addCase(addContactOperation.fulfilled, (state, action) => {
-        state.items.push(action.payload);
-        state.loading = false;
+        state.items.unshift(action.payload);
       })
-      .addCase(addContactOperation.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
-      })
-      .addCase(deleteContactOperation.pending, state => {
-        state.loading = true;
-      })
+
       .addCase(deleteContactOperation.fulfilled, (state, action) => {
         state.items = state.items.filter(
           contact => contact.id !== action.payload
         );
-        state.loading = false;
       })
-      .addCase(deleteContactOperation.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
-      })
-      .addCase(editContactOperation.pending, state => {
-        state.loading = true;
-      })
+
       .addCase(editContactOperation.fulfilled, (state, action) => {
-        const contactToEdit = state.items.find(
+        const index = state.items.findIndex(
           contact => contact.id === action.payload.id
         );
-        if (contactToEdit) {
-          contactToEdit.name = action.payload.name;
-          contactToEdit.number = action.payload.number;
+        if (index !== -1) {
+          state.items[index] = action.payload;
         }
-        state.loading = false;
       })
-      .addCase(editContactOperation.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
-      })
-      .addCase(logoutOperation.pending, state => {
-        state.loading = true;
-      })
+
       .addCase(logoutOperation.fulfilled, state => {
         state.items = [];
+        state.page = 1;
+        state.totalPages = 1;
         state.loading = false;
         state.error = null;
       })
       .addCase(logoutOperation.rejected, (state, action) => {
         state.error = action.error.message;
         state.loading = false;
-      });
+      })
+
+      .addMatcher(isPending, handlePending)
+      .addMatcher(isFulfilled, handleFulfilled)
+      .addMatcher(isRejected, handleRejected);
   },
 });
 
