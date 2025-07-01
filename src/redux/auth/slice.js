@@ -42,13 +42,13 @@ const slice = createSlice({
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isLoggedIn = true;
-        state.token = action.payload.token;
+        state.token = action.payload.accessToken;
         toast.success('Successfully registered!');
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isLoggedIn = true;
-        state.token = action.payload.token;
+        state.token = action.payload.accessToken;
         toast.success('Successfully logged in!');
       })
       .addCase(logoutThunk.fulfilled, state => {
@@ -71,12 +71,14 @@ const slice = createSlice({
         state.user = { name: '', email: '' };
         state.token = null;
         state.isLoggedIn = false;
+        state.isRefreshing = false;
         toast.error(action.payload?.message || ERROR_TEXT);
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.user = { name: '', email: '' };
         state.token = null;
         state.isLoggedIn = false;
+        state.isRefreshing = false;
         toast.error(action.payload?.message || ERROR_TEXT);
       })
       .addCase(logoutThunk.rejected, (state, action) => {

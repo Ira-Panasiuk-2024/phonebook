@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ContactForm from '../../components/ContactForm/ContactForm';
@@ -6,7 +6,6 @@ import ContactList from '../../components/ContactList/ContactList';
 import ContactFilters from '../../components/ContactFilters/ContactFilters';
 
 import { fetchContacts } from '../../redux/contacts/operations';
-
 import {
   selectIsLoading,
   selectPage,
@@ -25,11 +24,25 @@ const ContactsPage = () => {
   const isLoading = useSelector(selectIsLoading);
   const currentPage = useSelector(selectPage);
   const currentPerPage = useSelector(selectPerPage);
+
   const currentSearchQuery = useSelector(selectSearchQuery);
   const currentContactTypeFilter = useSelector(selectContactTypeFilter);
   const currentIsFavouriteFilter = useSelector(selectIsFavouriteFilter);
   const currentSortBy = useSelector(selectSortBy);
   const currentSortOrder = useSelector(selectSortOrder);
+
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState(currentSearchQuery);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(currentSearchQuery);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [currentSearchQuery]);
 
   useEffect(() => {
     const filterParams = {};
@@ -43,7 +56,7 @@ const ContactsPage = () => {
     const requestParams = {
       page: currentPage,
       perPage: currentPerPage,
-      query: currentSearchQuery,
+      query: debouncedSearchQuery,
       filter: filterParams,
       sortBy: currentSortBy,
       sortOrder: currentSortOrder,
@@ -54,7 +67,7 @@ const ContactsPage = () => {
     dispatch,
     currentPage,
     currentPerPage,
-    currentSearchQuery,
+    debouncedSearchQuery,
     currentContactTypeFilter,
     currentIsFavouriteFilter,
     currentSortBy,

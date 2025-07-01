@@ -84,7 +84,7 @@ const ContactForm = () => {
             type="tel"
             name="phoneNumber"
             id={phoneFieldId}
-            placeholder="Enter phone number (+380XXXXXXXXX or 380XXXXXXXXX)..."
+            placeholder="Enter phone number..."
           />
           <ErrorMessage
             name="phoneNumber"

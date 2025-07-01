@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-
 import {
   setContactTypeFilter,
   setIsFavouriteFilter,
@@ -25,6 +24,10 @@ const ContactFilters = () => {
   const sortBy = useSelector(selectSortBy);
   const sortOrder = useSelector(selectSortOrder);
 
+  const handleSearchQueryChange = e => {
+    dispatch(setSearchQuery(e.target.value));
+  };
+
   const handleContactTypeChange = e => {
     dispatch(setContactTypeFilter(e.target.value));
   };
@@ -39,10 +42,6 @@ const ContactFilters = () => {
       value = '';
     }
     dispatch(setIsFavouriteFilter(value));
-  };
-
-  const handleSearchQueryChange = e => {
-    dispatch(setSearchQuery(e.target.value));
   };
 
   const handleSortByChange = e => {

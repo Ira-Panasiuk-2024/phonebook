@@ -10,7 +10,7 @@ export const setAuthHeader = token => {
 };
 
 export const clearAuthHeader = () => {
-  baseAxios.defaults.headers.common.Authorization = '';
+  delete baseAxios.defaults.headers.common.Authorization;
 };
 
 export const handlePending = state => {

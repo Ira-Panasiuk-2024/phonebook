@@ -10,9 +10,18 @@ export const registerThunk = createAsyncThunk(
       setAuthHeader(data.data.accessToken);
       return data.data;
     } catch (error) {
-      if (error.response.data.code === 11000) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.code === 11000
+      ) {
         toast.error('User already exist!');
-        return thunkApi.rejectWithValue(error.message);
+      } else {
+        toast.error(
+          error.response?.data?.message ||
+            error.message ||
+            'Registration failed'
+        );
       }
       return thunkApi.rejectWithValue(error.message);
     }
@@ -27,6 +36,9 @@ export const loginThunk = createAsyncThunk(
       setAuthHeader(data.data.accessToken);
       return data.data;
     } catch (error) {
+      toast.error(
+        error.response?.data?.message || error.message || 'Login failed'
+      );
       return thunkApi.rejectWithValue(error.message);
     }
   }
@@ -38,8 +50,11 @@ export const logoutThunk = createAsyncThunk(
     try {
       await baseAxios.post('auth/logout');
       clearAuthHeader();
+      toast.success('Successfully logged out!');
     } catch (error) {
-      toast.error(error.message || 'Logout failed');
+      toast.error(
+        error.response?.data?.message || error.message || 'Logout failed'
+      );
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -50,7 +65,8 @@ export const refreshUserThunk = createAsyncThunk(
   async (_, thunkApi) => {
     const savedToken = thunkApi.getState().auth.token;
     if (!savedToken) {
-      return thunkApi.rejectWithValue('token is not exist');
+      clearAuthHeader();
+      return thunkApi.rejectWithValue('No token found');
     }
     setAuthHeader(savedToken);
 
@@ -58,7 +74,12 @@ export const refreshUserThunk = createAsyncThunk(
       const { data } = await baseAxios.get('auth/refresh');
       return data.data;
     } catch (error) {
-      toast.error(error.message || 'Session refresh failed');
+      clearAuthHeader();
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          'Session refresh failed'
+      );
       return thunkApi.rejectWithValue(error.message);
     }
   }

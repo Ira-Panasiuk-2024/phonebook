@@ -4,9 +4,9 @@
     gap: 20px;
     margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    border: 2px solid teal;
+    border-radius: 4px;
+    background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     justify-content: center;
 }
@@ -19,27 +19,40 @@
 }
 
 .label {
-    font-weight: bold;
-    color: #333;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight: 300;
+    color: #000;
+    text-align: left;
 }
 
-.select,
 .input {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
+    padding: 1px 2px;
+    border: 2px solid teal;
+    border-radius: 4px;
     background-color: #fff;
     cursor: pointer;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    outline: none;
+    width: 320px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #000;
+}
+
+.select {
+    padding: 1px 2px;
+    border: 2px solid teal;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    outline: none;
+    font-size: 16px;
+    font-weight: 300;
+    color: #000;
 }
 
 .select:focus,
 .input:focus {
-    border-color: teal;
-    box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.25);
-    outline: none;
+    border: 2px solid #000;
 }
