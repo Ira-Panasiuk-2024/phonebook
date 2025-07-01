@@ -42,7 +42,6 @@ const ContactForm = () => {
     const submittedValues = {
       ...values,
       isFavourite: values.isFavourite === true || values.isFavourite === 'true',
-
       email: values.email === '' ? null : values.email,
     };
     dispatch(addContactOperation(submittedValues));

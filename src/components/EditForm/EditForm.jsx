@@ -30,7 +30,7 @@ const EditForm = ({ contact, onSave, onCancel }) => {
   const contactTypeFieldId = useId();
   const isFavouriteFieldId = useId();
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = values => {
     const updatedValues = {};
     if (values.name !== contact.name) {
       updatedValues.name = values.name;
@@ -38,21 +38,17 @@ const EditForm = ({ contact, onSave, onCancel }) => {
     if (values.phoneNumber !== contact.phoneNumber) {
       updatedValues.phoneNumber = values.phoneNumber;
     }
-
     if (values.email !== contact.email) {
       updatedValues.email = values.email === '' ? null : values.email;
     }
-
     if (values.isFavourite !== contact.isFavourite) {
       updatedValues.isFavourite = values.isFavourite;
     }
-
     if (values.contactType !== contact.contactType) {
       updatedValues.contactType = values.contactType;
     }
 
     onSave({ id: contact._id, ...updatedValues });
-    resetForm();
   };
 
   return (
@@ -134,7 +130,6 @@ const EditForm = ({ contact, onSave, onCancel }) => {
         </div>
 
         <div className={css.checkboxGroup}>
-          {' '}
           <Field
             type="checkbox"
             name="isFavourite"

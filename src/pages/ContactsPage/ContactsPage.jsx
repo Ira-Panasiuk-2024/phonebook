@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ContactForm from '../../components/ContactForm/ContactForm';
-import SearchBox from '../../components/SearchBox/SearchBox';
 import ContactList from '../../components/ContactList/ContactList';
 import ContactFilters from '../../components/ContactFilters/ContactFilters';
 
@@ -14,9 +13,10 @@ import {
   selectPerPage,
   selectContactTypeFilter,
   selectIsFavouriteFilter,
+  selectSearchQuery,
+  selectSortBy,
+  selectSortOrder,
 } from '../../redux/contacts/selectors';
-
-import { selectFilter } from '../../redux/filters/selectors';
 
 import css from './ContactsPage.module.css';
 
@@ -25,9 +25,11 @@ const ContactsPage = () => {
   const isLoading = useSelector(selectIsLoading);
   const currentPage = useSelector(selectPage);
   const currentPerPage = useSelector(selectPerPage);
-  const currentSearchQuery = useSelector(selectFilter);
+  const currentSearchQuery = useSelector(selectSearchQuery);
   const currentContactTypeFilter = useSelector(selectContactTypeFilter);
   const currentIsFavouriteFilter = useSelector(selectIsFavouriteFilter);
+  const currentSortBy = useSelector(selectSortBy);
+  const currentSortOrder = useSelector(selectSortOrder);
 
   useEffect(() => {
     const filterParams = {};
@@ -38,14 +40,16 @@ const ContactsPage = () => {
       filterParams.isFavourite = currentIsFavouriteFilter;
     }
 
-    dispatch(
-      fetchContacts({
-        page: currentPage,
-        perPage: currentPerPage,
-        query: currentSearchQuery,
-        filter: filterParams,
-      })
-    );
+    const requestParams = {
+      page: currentPage,
+      perPage: currentPerPage,
+      query: currentSearchQuery,
+      filter: filterParams,
+      sortBy: currentSortBy,
+      sortOrder: currentSortOrder,
+    };
+
+    dispatch(fetchContacts(requestParams));
   }, [
     dispatch,
     currentPage,
@@ -53,6 +57,8 @@ const ContactsPage = () => {
     currentSearchQuery,
     currentContactTypeFilter,
     currentIsFavouriteFilter,
+    currentSortBy,
+    currentSortOrder,
   ]);
 
   return (
@@ -60,7 +66,6 @@ const ContactsPage = () => {
       <h2 className={css.title}>Your contacts</h2>
       <div>{isLoading && 'Request in progress...'}</div>
       <ContactForm />
-      <SearchBox />
       <ContactFilters />
       <ContactList />
     </>

@@ -74,21 +74,23 @@ const Contact = ({
       ) : (
         <>
           <div className={css.infoBox}>
-            {' '}
             <p className={css.text}>
               <HiUser size={22} color="grey" />
               {name}
             </p>
+
             <p className={css.text}>
               <BsFillTelephoneFill size={22} color="grey" />
               {phoneNumber}
             </p>
+
             {email && (
               <p className={css.text}>
                 <HiMail size={22} color="grey" />
                 {email}
               </p>
             )}
+
             {contactType && (
               <p className={css.text}>
                 {getContactTypeIcon(contactType)}
@@ -96,6 +98,7 @@ const Contact = ({
                   contactType.slice(1)}{' '}
               </p>
             )}
+
             <p className={css.text}>
               {isFavourite ? (
                 <MdStar size={22} color="gold" />
