@@ -39,7 +39,7 @@ export const logoutThunk = createAsyncThunk(
       await baseAxios.post('auth/logout');
       clearAuthHeader();
     } catch (error) {
-      toast.error(error.message || 'Logout failed'); 
+      toast.error(error.message || 'Logout failed');
       return thunkAPI.rejectWithValue(error.message);
     }
   }

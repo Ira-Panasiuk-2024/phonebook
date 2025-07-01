@@ -34,11 +34,12 @@ const App = () => {
     <div className={css.container}>
       <Routes>
         <Route path="/" element={<Layout />}>
-          
-          <Route index element={
-            <RestrictedRoute>
-              <HomePage />
-            </RestrictedRoute>
+          <Route
+            index
+            element={
+              <RestrictedRoute>
+                <HomePage />
+              </RestrictedRoute>
             }
           />
 
@@ -59,7 +60,7 @@ const App = () => {
               </RestrictedRoute>
             }
           />
-          
+
           <Route
             path="/contacts"
             element={
@@ -70,7 +71,6 @@ const App = () => {
           />
 
           <Route path="*" element={<NotFoundPage />} />
-
         </Route>
       </Routes>
     </div>

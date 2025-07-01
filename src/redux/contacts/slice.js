@@ -22,9 +22,16 @@ import {
 const initialState = {
   items: [],
   page: 1,
+  perPage: 10,
   totalPages: 1,
+  totalItems: 0,
   loading: false,
   error: null,
+  contactTypeFilter: '',
+  isFavouriteFilter: '',
+  searchQuery: '',
+  sortBy: 'phoneNumber',
+  sortOrder: 'asc',
 };
 
 const contactsSlice = createSlice({
@@ -34,60 +41,67 @@ const contactsSlice = createSlice({
     setPage: (state, action) => {
       state.page = action.payload;
     },
+    setPerPage: (state, action) => {
+      state.perPage = action.payload;
+    },
+    setContactTypeFilter: (state, action) => {
+      state.contactTypeFilter = action.payload;
+    },
+    setIsFavouriteFilter: (state, action) => {
+      state.isFavouriteFilter = action.payload;
+    },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
+    setSortBy: (state, action) => {
+      state.sortBy = action.payload;
+    },
+    setSortOrder: (state, action) => {
+      state.sortOrder = action.payload;
+    },
   },
   extraReducers: builder => {
-    builder // ВАЖЛИВО: Спочатку додаємо всі обробники `addCase` зі специфічною логікою // Потім додаємо загальні обробники `addMatcher` // Обробка успішного отримання контактів (fulfilled)
+    builder
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        if (action.payload && Array.isArray(action.payload.data)) {
-          state.items = action.payload.data;
-          state.page = action.payload.page || 1;
-          state.totalPages = action.payload.totalPages || 1;
+        if (action.payload && action.payload.data) {
+          state.items = action.payload.data.data || [];
+          state.page = action.payload.data.page || 1;
+          state.perPage = action.payload.data.perPage || 10;
+          state.totalPages = action.payload.data.totalPages || 1;
+          state.totalItems = action.payload.data.totalItems || 0;
         } else {
           state.items = [];
-          state.page = 1;
-          state.totalPages = 1;
           console.error(
             'Fetch contacts returned unexpected data structure:',
             action.payload
           );
         }
       })
-
-      .addCase(addContactOperation.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
+      .addCase(addContactOperation.fulfilled, (_state, _action) => {
+        void _action;
       })
-
-      .addCase(deleteContactOperation.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          contact => contact.id !== action.payload
-        );
+      .addCase(deleteContactOperation.fulfilled, (_state, _action) => {
+        void _action;
       })
-
-      .addCase(editContactOperation.fulfilled, (state, action) => {
-        const index = state.items.findIndex(
-          contact => contact.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.items[index] = action.payload;
-        }
+      .addCase(editContactOperation.fulfilled, (_state, _action) => {
+        void _action;
       })
-
       .addCase(logoutOperation.fulfilled, state => {
-        state.items = [];
-        state.page = 1;
-        state.totalPages = 1;
-        state.loading = false;
-        state.error = null;
+        Object.assign(state, initialState);
       })
-      .addCase(logoutOperation.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
-      })
-
       .addMatcher(isPending, handlePending)
       .addMatcher(isFulfilled, handleFulfilled)
       .addMatcher(isRejected, handleRejected);
   },
 });
 
+export const {
+  setPage,
+  setPerPage,
+  setContactTypeFilter,
+  setIsFavouriteFilter,
+  setSearchQuery,
+  setSortBy,
+  setSortOrder,
+} = contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;

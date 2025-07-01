@@ -9,29 +9,55 @@ const ContactFormSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Too Short!')
     .max(17, 'Too Long!')
-    .matches(/^[a-zA-Z\s]+$/, 'The name must contain only Latin letters')
-    .required('Required'),
-  number: Yup.string()
     .matches(
-      /^\d{3}-\d{3}-\d{4}$/,
-      'Phone number must be in the format XXX-XXX-XXXX'
+      /^[a-zA-Z\s]+$/,
+      'The name must contain only Latin letters and spaces'
+    )
+    .required('Required'),
+  phoneNumber: Yup.string()
+    .matches(
+      /^(\+380|380)[0-9]{9}$/,
+      'Phone number must be in the format +380XXXXXXXXX or 380XXXXXXXXX'
+    )
+    .required('Required'),
+  email: Yup.string().email('Invalid email address').nullable(),
+  isFavourite: Yup.boolean().default(false),
+  contactType: Yup.string()
+    .oneOf(
+      ['work', 'home', 'personal'],
+      'Contact type must be one of: work, home, personal'
     )
     .required('Required'),
 });
 
-function ContactForm() {
+const ContactForm = () => {
   const dispatch = useDispatch();
   const nameFieldId = useId();
   const phoneFieldId = useId();
+  const emailFieldId = useId();
+  const contactTypeFieldId = useId();
+  const isFavouriteFieldId = useId();
 
   const handleSubmit = (values, { resetForm }) => {
-    dispatch(addContactOperation(values));
+    const submittedValues = {
+      ...values,
+      isFavourite: values.isFavourite === true || values.isFavourite === 'true',
+
+      email: values.email === '' ? null : values.email,
+    };
+    dispatch(addContactOperation(submittedValues));
     resetForm();
   };
 
   return (
     <Formik
-      initialValues={{ name: '', number: '' }}
+      initialValues={{
+        name: '',
+        phoneNumber: '',
+        email: '',
+        isFavourite: false,
+        contactType: 'personal',
+      }}
       onSubmit={handleSubmit}
       validationSchema={ContactFormSchema}
     >
@@ -57,11 +83,67 @@ function ContactForm() {
           <Field
             className={css.field}
             type="tel"
-            name="number"
+            name="phoneNumber"
             id={phoneFieldId}
-            placeholder="Enter phone number (XXX-XXX-XXXX)..."
+            placeholder="Enter phone number (+380XXXXXXXXX or 380XXXXXXXXX)..."
           />
-          <ErrorMessage name="number" className={css.error} component="span" />
+          <ErrorMessage
+            name="phoneNumber"
+            className={css.error}
+            component="span"
+          />
+        </div>
+
+        <div>
+          <label className={css.label} htmlFor={emailFieldId}>
+            Email
+          </label>
+          <Field
+            className={css.field}
+            type="email"
+            name="email"
+            id={emailFieldId}
+            placeholder="Enter email (optional)..."
+          />
+          <ErrorMessage name="email" className={css.error} component="span" />
+        </div>
+
+        <div>
+          <label className={css.label} htmlFor={contactTypeFieldId}>
+            Contact Type
+          </label>
+          <Field
+            as="select"
+            className={css.field}
+            name="contactType"
+            id={contactTypeFieldId}
+          >
+            <option value="personal">Personal</option>
+            <option value="work">Work</option>
+            <option value="home">Home</option>
+          </Field>
+          <ErrorMessage
+            name="contactType"
+            className={css.error}
+            component="span"
+          />
+        </div>
+
+        <div className={css.checkboxGroup}>
+          <Field
+            type="checkbox"
+            name="isFavourite"
+            id={isFavouriteFieldId}
+            className={css.checkbox}
+          />
+          <label className={css.label} htmlFor={isFavouriteFieldId}>
+            Is Favourite
+          </label>
+          <ErrorMessage
+            name="isFavourite"
+            className={css.error}
+            component="span"
+          />
         </div>
 
         <button className={css.btn} type="submit">
@@ -70,6 +152,6 @@ function ContactForm() {
       </Form>
     </Formik>
   );
-}
+};
 
 export default ContactForm;

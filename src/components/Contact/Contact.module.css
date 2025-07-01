@@ -1,56 +1,115 @@
 .item {
-  padding: 5px 10px;
+  padding: 15px 20px;
+  /* Збільшено відступи */
   border: 2px solid teal;
-  border-radius: 4px;
+  border-radius: 8px;
+  /* Більш округлі кути */
   text-align: left;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  /* Вирівнювання елементів по верху */
+  margin-bottom: 10px;
+  /* Відступ між елементами списку */
+  background-color: #fff;
+  /* Білий фон для елемента */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Легка тінь */
+  transition: transform 0.2s ease-in-out;
+  /* Анімація при наведенні */
 }
 
-.box {
+.item:hover {
+  transform: translateY(-3px);
+  /* Легкий підйом при наведенні */
+}
+
+.infoBox {
+  /* Змінено назву класу для кращої семантики */
   display: flex;
-  gap: 10px;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 8px;
+  /* Зменшено відступ між полями */
+  flex-grow: 1;
+  /* Дозволяє займати доступний простір */
 }
 
 .text {
-  font-size: 18px;
-  font-weight: 300;
-  color: black;
-  width: 175px;
+  font-size: 16px;
+  /* Трохи зменшено розмір шрифту */
+  font-weight: 400;
+  /* Змінено товщину шрифту */
+  color: #333;
+  /* Темніший колір тексту */
   display: flex;
+  align-items: center;
+  /* Вирівнювання іконки та тексту по центру */
   gap: 10px;
+  /* Відступ між іконкою та текстом */
+  flex-wrap: wrap;
+  /* Дозволяє тексту переноситись на новий рядок */
+  word-break: break-word;
+  /* Запобігає виходу довгих слів за межі */
+}
+
+.text svg {
+  /* Стилі для іконок всередині тексту */
+  flex-shrink: 0;
+  /* Запобігає зменшенню розміру іконки */
 }
 
 .wrap {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  /* Кнопки одна під одною */
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
+  /* Відступ між кнопками */
+  margin-left: 20px;
+  /* Відступ від інформаційного блоку */
 }
 
 .btn {
   display: block;
   text-align: center;
-  margin: 0 auto;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 2px solid darkgray;
-  background-color: transparent;
-  color: black;
-  font-size: 18px;
+  padding: 8px 16px;
+  /* Збільшено padding для кнопок */
+  border-radius: 6px;
+  /* Більш округлі кути для кнопок */
+  border: 1px solid #007bff;
+  /* Колір бордера */
+  background-color: #007bff;
+  /* Синій фон */
+  color: white;
+  /* Білий текст */
+  font-size: 16px;
+  /* Розмір шрифту кнопок */
   font-weight: 500;
-  width: 72px;
+  width: 90px;
+  /* Фіксована ширина для кнопок */
   height: 40px;
-  line-height: 50%;
-  transition: color 250ms cubic-bezier(0.075, 0.82, 0.165, 1), border 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+  /* Фіксована висота */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {
-      color: teal;
-      border: 2px solid teal;
+    background-color: #0056b3;
+    /* Темніший синій при наведенні */
+    border-color: #0056b3;
   }
+}
+
+/* Стилі для кнопки Delete, щоб вона відрізнялась */
+.btn:nth-child(2) {
+  /* Друга кнопка (Delete) */
+  background-color: #dc3545;
+  /* Червоний фон */
+  border-color: #dc3545;
+}
+
+.btn:nth-child(2):hover {
+  background-color: #c82333;
+  /* Темніший червоний при наведенні */
+  border-color: #c82333;
 }

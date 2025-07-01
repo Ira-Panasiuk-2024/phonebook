@@ -1,30 +1,25 @@
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   deleteContactOperation,
   editContactOperation,
 } from '../../redux/contacts/operations';
 
-import { selectVisibleContacts } from '../../redux/filters/selectors';
+import { selectContacts } from '../../redux/contacts/selectors';
 import Contact from '../Contact/Contact';
 import css from './ContactList.module.css';
-import { useEffect } from 'react';
-import { fetchContacts } from '../../redux/contacts/operations';
 
-function ContactList() {
+const ContactList = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectVisibleContacts);
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+  const contacts = useSelector(selectContacts);
 
   return (
     <ul className={css.list}>
       {contacts.map(contact => (
-        <li className={css.item} key={contact.id}>
+        <li className={css.item} key={contact._id}>
           <Contact
             {...contact}
-            onDelete={() => dispatch(deleteContactOperation(contact.id))}
+            onDelete={() => dispatch(deleteContactOperation(contact._id))}
             onEdit={updatedContact =>
               dispatch(editContactOperation(updatedContact))
             }
@@ -33,6 +28,6 @@ function ContactList() {
       ))}
     </ul>
   );
-}
+};
 
 export default ContactList;

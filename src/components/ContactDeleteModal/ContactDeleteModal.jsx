@@ -1,4 +1,3 @@
-import React from 'react';
 import Modal from 'react-modal';
 import css from './ContactDeleteModal.module.css';
 
@@ -13,12 +12,18 @@ function ContactDeleteModal({ isOpen, onRequestClose, onDelete }) {
       className={css.modal}
       overlayClassName={css.overlay}
     >
-        <h2 className={css.modalTitle}>Confirm Delete</h2>
-        <p className={css.modalText}>Are you sure you want to delete this contact?</p>
-        <div className={css.modalBox}>
-            <button className={css.btnDelete} onClick={onDelete}>Yes, Delete</button>
-            <button className={css.btnCancel} onClick={onRequestClose}>Cancel</button>
-        </div>
+      <h2 className={css.modalTitle}>Confirm Delete</h2>
+      <p className={css.modalText}>
+        Are you sure you want to delete this contact?
+      </p>
+      <div className={css.modalBox}>
+        <button className={css.btnDelete} onClick={onDelete}>
+          Yes, Delete
+        </button>
+        <button className={css.btnCancel} onClick={onRequestClose}>
+          Cancel
+        </button>
+      </div>
     </Modal>
   );
 }

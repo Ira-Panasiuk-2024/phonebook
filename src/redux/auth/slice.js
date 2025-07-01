@@ -4,7 +4,9 @@ import {
   isFulfilled,
   isRejected,
 } from '@reduxjs/toolkit';
+
 import toast from 'react-hot-toast';
+
 import {
   loginThunk,
   logoutThunk,
@@ -36,7 +38,7 @@ const slice = createSlice({
   name: 'auth',
   initialState,
   extraReducers: builder => {
-    builder // ВАЖЛИВО: Спочатку додаємо всі обробники `addCase` // Це необхідно, оскільки `addMatcher` має бути викликаний після всіх `addCase` // Обробка успішних станів (fulfilled)
+    builder
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isLoggedIn = true;

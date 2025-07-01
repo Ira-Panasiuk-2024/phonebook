@@ -15,15 +15,15 @@ export const clearAuthHeader = () => {
 
 export const handlePending = state => {
   state.loading = true;
-  state.error = null; // Очищаємо попередні помилки при старті нового запиту
+  state.error = null;
 };
 
 export const handleFulfilled = state => {
   state.loading = false;
-  state.error = null; // Очищаємо помилку при успішному виконанні
+  state.error = null;
 };
 
 export const handleRejected = (state, action) => {
   state.loading = false;
-  state.error = action.payload; // Встановлюємо помилку, отриману з thunk'а
+  state.error = action.payload;
 };
