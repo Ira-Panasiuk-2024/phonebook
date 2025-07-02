@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import ContactList from '../../components/ContactList/ContactList';
 import ContactFilters from '../../components/ContactFilters/ContactFilters';
+import Pagination from '../../components/Pagination/Pagination';
 
 import { fetchContacts } from '../../redux/contacts/operations';
 import {
@@ -118,6 +119,7 @@ const ContactsPage = () => {
       <ContactForm />
       <ContactFilters />
       <ContactList />
+      <Pagination />
     </>
   );
 };

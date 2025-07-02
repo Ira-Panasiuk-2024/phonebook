@@ -6,6 +6,8 @@ export const selectPage = state => state.contacts.page;
 export const selectPerPage = state => state.contacts.perPage;
 export const selectTotalPages = state => state.contacts.totalPages;
 export const selectTotalItems = state => state.contacts.totalItems;
+export const selectHasNextPage = state => state.contacts.hasNextPage;
+export const selectHasPreviousPage = state => state.contacts.hasPreviousPage;
 
 export const selectContactTypeFilter = state =>
   state.contacts.contactTypeFilter;

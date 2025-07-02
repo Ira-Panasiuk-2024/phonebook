@@ -25,13 +25,15 @@ const initialState = {
   perPage: 10,
   totalPages: 1,
   totalItems: 0,
+  hasNextPage: false,
+  hasPreviousPage: false,
   loading: false,
   error: null,
   contactTypeFilter: '',
   isFavouriteFilter: '',
-  searchQuery: '',
   sortBy: 'phoneNumber',
   sortOrder: 'asc',
+  searchQuery: '',
 };
 
 const contactsSlice = createSlice({
@@ -50,14 +52,14 @@ const contactsSlice = createSlice({
     setIsFavouriteFilter: (state, action) => {
       state.isFavouriteFilter = action.payload;
     },
-    setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload;
-    },
     setSortBy: (state, action) => {
       state.sortBy = action.payload;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
+    },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
     },
   },
   extraReducers: builder => {
@@ -69,6 +71,8 @@ const contactsSlice = createSlice({
           state.perPage = action.payload.data.perPage || 10;
           state.totalPages = action.payload.data.totalPages || 1;
           state.totalItems = action.payload.data.totalItems || 0;
+          state.hasNextPage = action.payload.data.hasNextPage;
+          state.hasPreviousPage = action.payload.data.hasPreviousPage;
         } else {
           state.items = [];
           console.error(
@@ -78,12 +82,15 @@ const contactsSlice = createSlice({
         }
       })
       .addCase(addContactOperation.fulfilled, (_state, _action) => {
+        void _state;
         void _action;
       })
       .addCase(deleteContactOperation.fulfilled, (_state, _action) => {
+        void _state;
         void _action;
       })
       .addCase(editContactOperation.fulfilled, (_state, _action) => {
+        void _state;
         void _action;
       })
       .addCase(logoutOperation.fulfilled, state => {
@@ -100,8 +107,9 @@ export const {
   setPerPage,
   setContactTypeFilter,
   setIsFavouriteFilter,
-  setSearchQuery,
   setSortBy,
   setSortOrder,
+  setSearchQuery,
 } = contactsSlice.actions;
+
 export const contactsReducer = contactsSlice.reducer;
