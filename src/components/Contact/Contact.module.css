@@ -1,12 +1,12 @@
 .item {
-  padding: 15px 20px;
+  padding: 15px;
   border: 2px solid teal;
-  border-radius: 8px;
+  border-radius: 4px;
   text-align: left;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
@@ -29,7 +29,6 @@
   color: #333;
   display: flex;
   align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
   word-break: break-word;
 }
@@ -45,7 +44,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-left: 20px;
+  margin-left: 12px;
 }
 
 .btn {
