@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { debounce } from 'lodash';
 
 import ContactForm from '../../components/ContactForm/ContactForm';
 import ContactList from '../../components/ContactList/ContactList';
@@ -31,18 +32,21 @@ const ContactsPage = () => {
   const currentSortBy = useSelector(selectSortBy);
   const currentSortOrder = useSelector(selectSortOrder);
 
-  const [debouncedSearchQuery, setDebouncedSearchQuery] =
-    useState(currentSearchQuery);
+  const previousFiltersRef = useRef({});
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchQuery(currentSearchQuery);
-    }, 300);
+  const fetchContactsData = params => {
+    dispatch(fetchContacts(params));
+  };
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [currentSearchQuery]);
+  const debouncedSearchFetch = useMemo(
+    () => debounce(fetchContactsData, 500),
+    []
+  );
+
+  const debouncedFiltersFetch = useMemo(
+    () => debounce(fetchContactsData, 200),
+    []
+  );
 
   useEffect(() => {
     const filterParams = {};
@@ -56,22 +60,55 @@ const ContactsPage = () => {
     const requestParams = {
       page: currentPage,
       perPage: currentPerPage,
-      query: debouncedSearchQuery,
+      query: currentSearchQuery,
       filter: filterParams,
       sortBy: currentSortBy,
       sortOrder: currentSortOrder,
     };
 
-    dispatch(fetchContacts(requestParams));
+    const previousFilters = previousFiltersRef.current;
+
+    const onlySearchChanged =
+      previousFilters.contactType === currentContactTypeFilter &&
+      previousFilters.isFavourite === currentIsFavouriteFilter &&
+      previousFilters.sortBy === currentSortBy &&
+      previousFilters.sortOrder === currentSortOrder &&
+      previousFilters.page === currentPage &&
+      previousFilters.perPage === currentPerPage &&
+      previousFilters.searchQuery !== currentSearchQuery;
+
+    previousFiltersRef.current = {
+      contactType: currentContactTypeFilter,
+      isFavourite: currentIsFavouriteFilter,
+      sortBy: currentSortBy,
+      sortOrder: currentSortOrder,
+      page: currentPage,
+      perPage: currentPerPage,
+      searchQuery: currentSearchQuery,
+    };
+
+    if (onlySearchChanged) {
+      debouncedFiltersFetch.cancel();
+      debouncedSearchFetch(requestParams);
+    } else {
+      debouncedSearchFetch.cancel();
+      debouncedFiltersFetch(requestParams);
+    }
+
+    return () => {
+      debouncedSearchFetch.cancel();
+      debouncedFiltersFetch.cancel();
+    };
   }, [
-    dispatch,
     currentPage,
     currentPerPage,
-    debouncedSearchQuery,
+    currentSearchQuery,
     currentContactTypeFilter,
     currentIsFavouriteFilter,
     currentSortBy,
     currentSortOrder,
+    debouncedSearchFetch,
+    debouncedFiltersFetch,
   ]);
 
   return (
