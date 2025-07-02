@@ -23,8 +23,6 @@ const Pagination = () => {
   const hasPreviousPage = useSelector(selectHasPreviousPage);
   const currentPerPage = useSelector(selectPerPage);
 
-  // Отримуємо поточні значення фільтрів/пошуку/сортування
-  // Це потрібно, щоб при зміні сторінки, ці параметри не скидалися
   const currentSearchQuery = useSelector(selectSearchQuery);
   const currentContactTypeFilter = useSelector(selectContactTypeFilter);
   const currentIsFavouriteFilter = useSelector(selectIsFavouriteFilter);
@@ -33,12 +31,11 @@ const Pagination = () => {
 
   const handlePageChange = newPage => {
     if (newPage < 1 || newPage > totalPages) {
-      return; // Запобігаємо виходу за межі сторінок
+      return;
     }
 
-    dispatch(setPage(newPage)); // Оновлюємо поточну сторінку в Redux
+    dispatch(setPage(newPage));
 
-    // Формуємо об'єкт фільтрів для передачі на бекенд
     const filterParams = {};
     if (currentContactTypeFilter) {
       filterParams.contactType = currentContactTypeFilter;
@@ -47,8 +44,6 @@ const Pagination = () => {
       filterParams.isFavourite = currentIsFavouriteFilter;
     }
 
-    // Відправляємо запит на бекенд з новими параметрами пагінації
-    // та збереженими параметрами пошуку, фільтрації та сортування
     dispatch(
       fetchContacts({
         page: newPage,
@@ -61,14 +56,12 @@ const Pagination = () => {
     );
   };
 
-  // Генеруємо масив номерів сторінок для відображення
   const pageNumbers = [];
-  // Логіка для відображення обмеженої кількості номерів сторінок навколо поточної
-  const maxPagesToShow = 5; // Наприклад, показуємо 5 сторінок
+
+  const maxPagesToShow = 5;
   let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
 
-  // Коригуємо startPage, якщо endPage досяг totalPages, але не maxPagesToShow
   if (endPage - startPage + 1 < maxPagesToShow && totalPages > maxPagesToShow) {
     startPage = Math.max(1, endPage - maxPagesToShow + 1);
   }
@@ -87,7 +80,6 @@ const Pagination = () => {
         Previous
       </button>
 
-      {/* Відображення першої сторінки, якщо вона не в діапазоні */}
       {startPage > 1 && (
         <>
           <button
@@ -102,7 +94,6 @@ const Pagination = () => {
         </>
       )}
 
-      {/* Номери сторінок */}
       {pageNumbers.map(number => (
         <button
           key={number}
@@ -115,7 +106,6 @@ const Pagination = () => {
         </button>
       ))}
 
-      {/* Відображення останньої сторінки, якщо вона не в діапазоні */}
       {endPage < totalPages && (
         <>
           {endPage < totalPages - 1 && (
