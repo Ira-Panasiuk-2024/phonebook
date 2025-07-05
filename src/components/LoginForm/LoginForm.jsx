@@ -16,7 +16,12 @@ const LoginForm = () => {
       .email('Invalid email address')
       .required('Email is required'),
     password: Yup.string()
-      .min(6, 'Password must be at least 6 characters')
+      .min(8, 'Password must be at least 8 characters')
+      .max(30, 'Password must be 30 characters or less')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,30}$/,
+        'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'
+      )
       .required('Password is required'),
   });
 

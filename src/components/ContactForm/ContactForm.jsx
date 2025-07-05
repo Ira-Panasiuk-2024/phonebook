@@ -7,12 +7,8 @@ import css from './ContactForm.module.css';
 
 const ContactFormSchema = Yup.object().shape({
   name: Yup.string()
-    .min(2, 'Too Short!')
-    .max(17, 'Too Long!')
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      'The name must contain only Latin letters and spaces'
-    )
+    .min(3, 'Too Short!')
+    .max(20, 'Too Long!')
     .required('Required'),
   phoneNumber: Yup.string()
     .matches(

@@ -4,13 +4,7 @@ import * as Yup from 'yup';
 import css from './EditForm.module.css';
 
 const EditFormSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(2, 'Too Short!')
-    .max(17, 'Too Long!')
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      'The name must contain only Latin letters and spaces'
-    ),
+  name: Yup.string().min(3, 'Too Short!').max(20, 'Too Long!'),
   phoneNumber: Yup.string().matches(
     /^(\+380|380)[0-9]{9}$/,
     'Phone number must be in the format +380XXXXXXXXX or 380XXXXXXXXX'
