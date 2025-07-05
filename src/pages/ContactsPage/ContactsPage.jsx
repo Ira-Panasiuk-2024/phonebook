@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce } from 'lodash';
-
+import { useDebounce } from '../../hooks/useDebounce';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import ContactList from '../../components/ContactList/ContactList';
 import ContactFilters from '../../components/ContactFilters/ContactFilters';
 import Pagination from '../../components/Pagination/Pagination';
-
 import { fetchContacts } from '../../redux/contacts/operations';
 import {
   selectIsLoading,
@@ -18,7 +16,6 @@ import {
   selectSortBy,
   selectSortOrder,
 } from '../../redux/contacts/selectors';
-
 import css from './ContactsPage.module.css';
 
 const ContactsPage = () => {
@@ -26,28 +23,13 @@ const ContactsPage = () => {
   const isLoading = useSelector(selectIsLoading);
   const currentPage = useSelector(selectPage);
   const currentPerPage = useSelector(selectPerPage);
-
   const currentSearchQuery = useSelector(selectSearchQuery);
   const currentContactTypeFilter = useSelector(selectContactTypeFilter);
   const currentIsFavouriteFilter = useSelector(selectIsFavouriteFilter);
   const currentSortBy = useSelector(selectSortBy);
   const currentSortOrder = useSelector(selectSortOrder);
 
-  const previousFiltersRef = useRef({});
-
-  const fetchContactsData = params => {
-    dispatch(fetchContacts(params));
-  };
-
-  const debouncedSearchFetch = useMemo(
-    () => debounce(fetchContactsData, 500),
-    []
-  );
-
-  const debouncedFiltersFetch = useMemo(
-    () => debounce(fetchContactsData, 200),
-    []
-  );
+  const debouncedSearchQuery = useDebounce(currentSearchQuery, 1000);
 
   useEffect(() => {
     const filterParams = {};
@@ -61,55 +43,34 @@ const ContactsPage = () => {
     const requestParams = {
       page: currentPage,
       perPage: currentPerPage,
-      query: currentSearchQuery,
+      query: debouncedSearchQuery,
       filter: filterParams,
       sortBy: currentSortBy,
       sortOrder: currentSortOrder,
     };
 
-    const previousFilters = previousFiltersRef.current;
+    const shouldFetch =
+      debouncedSearchQuery.length === 0 ||
+      debouncedSearchQuery.length >= 2 ||
+      currentContactTypeFilter ||
+      currentIsFavouriteFilter !== '' ||
+      currentPage !== 1 ||
+      currentPerPage !== 10 ||
+      currentSortBy !== 'phoneNumber' ||
+      currentSortOrder !== 'asc';
 
-    const onlySearchChanged =
-      previousFilters.contactType === currentContactTypeFilter &&
-      previousFilters.isFavourite === currentIsFavouriteFilter &&
-      previousFilters.sortBy === currentSortBy &&
-      previousFilters.sortOrder === currentSortOrder &&
-      previousFilters.page === currentPage &&
-      previousFilters.perPage === currentPerPage &&
-      previousFilters.searchQuery !== currentSearchQuery;
-
-    previousFiltersRef.current = {
-      contactType: currentContactTypeFilter,
-      isFavourite: currentIsFavouriteFilter,
-      sortBy: currentSortBy,
-      sortOrder: currentSortOrder,
-      page: currentPage,
-      perPage: currentPerPage,
-      searchQuery: currentSearchQuery,
-    };
-
-    if (onlySearchChanged) {
-      debouncedFiltersFetch.cancel();
-      debouncedSearchFetch(requestParams);
-    } else {
-      debouncedSearchFetch.cancel();
-      debouncedFiltersFetch(requestParams);
+    if (shouldFetch) {
+      dispatch(fetchContacts(requestParams));
     }
-
-    return () => {
-      debouncedSearchFetch.cancel();
-      debouncedFiltersFetch.cancel();
-    };
   }, [
+    dispatch,
     currentPage,
     currentPerPage,
-    currentSearchQuery,
+    debouncedSearchQuery,
     currentContactTypeFilter,
     currentIsFavouriteFilter,
     currentSortBy,
     currentSortOrder,
-    debouncedSearchFetch,
-    debouncedFiltersFetch,
   ]);
 
   return (

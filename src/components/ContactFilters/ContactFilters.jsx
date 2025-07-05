@@ -5,6 +5,7 @@ import {
   setSearchQuery,
   setSortBy,
   setSortOrder,
+  clearFilters,
 } from '../../redux/contacts/slice';
 import {
   selectContactTypeFilter,
@@ -50,6 +51,10 @@ const ContactFilters = () => {
 
   const handleSortOrderChange = e => {
     dispatch(setSortOrder(e.target.value));
+  };
+
+  const handleClearFilters = () => {
+    dispatch(clearFilters());
   };
 
   return (
@@ -136,6 +141,14 @@ const ContactFilters = () => {
           <option value="desc">Descending</option>
         </select>
       </div>
+
+      <button
+        type="button"
+        onClick={handleClearFilters}
+        className={css.clearButton}
+      >
+        Clear Filters
+      </button>
     </div>
   );
 };

@@ -61,6 +61,14 @@ const contactsSlice = createSlice({
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
     },
+    clearFilters: state => {
+      state.searchQuery = '';
+      state.contactTypeFilter = '';
+      state.isFavouriteFilter = '';
+      state.sortBy = initialState.sortBy;
+      state.sortOrder = initialState.sortOrder;
+      state.page = 1;
+    },
   },
   extraReducers: builder => {
     builder
@@ -110,6 +118,7 @@ export const {
   setSortBy,
   setSortOrder,
   setSearchQuery,
+  clearFilters,
 } = contactsSlice.actions;
 
 export const contactsReducer = contactsSlice.reducer;
